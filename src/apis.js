@@ -14,7 +14,7 @@ api.get('/ping',async(req,res) => {
 });
 
 api.get('/create',async(req,res) => { 
-    const [resultado] = await pool.query('INSERT INTO usuarios (id, nombre, email, fecha_registro) VALUES (1,"Juan Pérez", "juan.perez@example.com"."2024-10-06")');
+    const [resultado] = await pool.query('INSERT INTO usuarios (id, nombre, email, fecha_registro) VALUES (1,"Juan Pérez", "juan.perez@example.com","2024-10-06")');
     console.log (resultado)
     res.json(resultado)
 });
