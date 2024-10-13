@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitor de Sensores</title>
+    <style>
+        /* Estilos para la notificación */
+        #alerta {
+            display: none;
+            background-color: red;
+            color: white;
+            padding: 10px;
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <h1>Monitor de Gas</h1>
+    <div id="sensor-data"></div>
+    <div id="alerta">¡ALERTA! Nivel de gas crítico</div>
+
+    <script>
+        // Conexión WebSocket al servidor
+        const socket = new WebSocket('wss://proyectocleanair-production-3367.up.railway.app');
+
+        // Evento cuando se recibe un mensaje del servidor
+        socket.onmessage = function (event) {
+            const data = JSON.parse(event.data);
+
+            // Mostrar los datos del sensor en la página
+            document.getElementById('sensor-data').innerText = `Nivel de gas: ${data.gas_level}`;
+
+            // Mostrar alerta si es necesario
+            if (data.alerta) {
+                document.getElementById('alerta').style.display = 'block';
+            } else {
+                document.getElementById('alerta').style.display = 'none';
+            }
+        };
+
+        // Evento cuando se abre la conexión WebSocket
+        socket.onopen = function () {
+            console.log('Conectado al WebSocket');
+        };
+
+        // Evento cuando ocurre un error en la conexión WebSocket
+        socket.onerror = function (error) {
+            console.error('Error en WebSocket:', error);
+        };
+
+        // Evento cuando se cierra la conexión WebSocket
+        socket.onclose = function () {
+            console.log('Conexión WebSocket cerrada');
+        };
+    </script>
+</body>
+</html>

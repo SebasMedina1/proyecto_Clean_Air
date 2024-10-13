@@ -21,11 +21,15 @@ app.post('/api/data', (req, res) => {
         console.log('ALERTA: Nivel de gas crítico:', sensorData.gas_level);
     }
 
+    // Verificar qué datos se están enviando
+    console.log('Datos enviados a los clientes:', sensorData);
+
     // Notificar a todos los clientes conectados mediante WebSocket
     wss.clients.forEach(function each(client) {
         if (client.readyState === WebSocket.OPEN) {
             client.send(JSON.stringify({
                 alerta,
+                sensor: sensorData.sensor,
                 gas_level: sensorData.gas_level,
                 message: alerta ? 'Nivel de gas peligroso' : 'cuidado'
             }));
@@ -44,5 +48,6 @@ const server = app.listen(port, () => {
 server.on('upgrade', (request, socket, head) => {
     wss.handleUpgrade(request, socket, head, (ws) => {
         wss.emit('connection', ws, request);
+        console.log('Nuevo cliente conectado');
     });
 });
