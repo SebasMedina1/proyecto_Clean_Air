@@ -1,7 +1,7 @@
 const express = require('express');
 const WebSocket = require('ws');
-import {pool} from './db.js'
-import { PORT } from "./config.js";
+const pool = require('./db');
+const { PORT } = require('./config');
 const app = express();
 const port = process.env.PORT || 3000;  // Puerto dinámico para Railway
 
@@ -65,15 +65,15 @@ app.post('/api/data', (req, res) => {
 app.post('/api/login', async (req, res) => {
     try {
         // Recibir usuario y contraseña desde el cuerpo de la solicitud
-        const { usuario, contraseña } = req.body;
+        const { usuario, contrasena } = req.body;
 
         // Validar que ambos campos estén presentes
-        if (!usuario || !contraseña) {
+        if (!usuario || !contrasena) {
             return res.status(400).json({ error: 'Usuario y contraseña son obligatorios' });
         }
 
         // Realizar la consulta a la tabla usuarios
-        const [rows] = await pool.query('SELECT * FROM users WHERE usuario = ? AND contrasena = ?', [usuario, contraseña]);
+        const [rows] = await pool.query('SELECT * FROM users WHERE usuario = ? AND contrasena = ?', [usuario, contrasena]);
 
         // Verificar si se encontró algún registro que coincida
         if (rows.length > 0) {
