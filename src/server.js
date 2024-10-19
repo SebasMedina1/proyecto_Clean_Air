@@ -1,5 +1,7 @@
 const express = require('express');
 const WebSocket = require('ws');
+import {pool} from './db.js'
+import { PORT } from "./config.js";
 const app = express();
 const port = process.env.PORT || 3000;  // Puerto dinámico para Railway
 
