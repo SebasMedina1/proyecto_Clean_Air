@@ -20,14 +20,12 @@ const wss = new WebSocket.Server({ noServer: true });
 
 // Ruta para recibir datos del ESP32
 app.post('/api/data', (req, res) => {
-    console.log('Datos crudos recibidos:', req.body); // Imprimir los datos recibidos
-
     try {
         const sensorData = req.body;
 
-        // Validar que el cuerpo de la solicitud tiene la estructura correcta
+        // Capturar posibles errores al analizar los datos
         if (!sensorData || typeof sensorData.gas_level === 'undefined' || typeof sensorData.sensor === 'undefined') {
-            return res.status(400).send({ error: 'Datos incompletos o incorrectos' });
+            throw new Error('Datos incompletos o incorrectos');
         }
 
         const umbralCritico = 1;
@@ -57,7 +55,8 @@ app.post('/api/data', (req, res) => {
         res.status(200).send('Datos procesados');
     } catch (error) {
         // Captura cualquier error que ocurra durante el procesamiento
-        console.error('Error procesando los datos:', error);
+        console.error('Error procesando los datos del sensor:', req.body);
+        console.error('Detalles del error:', error);
         res.status(500).send({ error: 'Error procesando los datos' });
     }
 });
