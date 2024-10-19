@@ -20,6 +20,8 @@ const wss = new WebSocket.Server({ noServer: true });
 
 // Ruta para recibir datos del ESP32
 app.post('/api/data', (req, res) => {
+    console.log('Datos crudos recibidos:', req.body); // Imprimir los datos recibidos
+
     try {
         const sensorData = req.body;
 
