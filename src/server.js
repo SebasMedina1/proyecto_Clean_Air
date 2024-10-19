@@ -66,6 +66,7 @@ app.post('/api/login', async (req, res) => {
     try {
         // Recibir usuario y contraseña desde el cuerpo de la solicitud
         const { usuario, contrasena } = req.body;
+        console.error('Error procesando los datos del sensor:', req.body);
 
         // Validar que ambos campos estén presentes
         if (!usuario || !contrasena) {
