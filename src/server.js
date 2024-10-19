@@ -60,7 +60,31 @@ app.post('/api/data', (req, res) => {
         res.status(500).send({ error: 'Error procesando los datos' });
     }
 });
+app.post('/api/login', async (req, res) => {
+    try {
+        // Recibir usuario y contraseña desde el cuerpo de la solicitud
+        const { usuario, contraseña } = req.body;
 
+        // Validar que ambos campos estén presentes
+        if (!usuario || !contraseña) {
+            return res.status(400).json({ error: 'Usuario y contraseña son obligatorios' });
+        }
+
+        // Realizar la consulta a la tabla usuarios
+        const [rows] = await pool.query('SELECT * FROM users WHERE usuario = ? AND contrasena = ?', [usuario, contraseña]);
+
+        // Verificar si se encontró algún registro que coincida
+        if (rows.length > 0) {
+            console.log('Autenticación exitosa:', rows);
+            res.status(200).json({ mensaje: 'Autenticación exitosa', datos: rows[0] }); // Puedes personalizar la respuesta según sea necesario
+        } else {
+            res.status(401).json({ error: 'Usuario o contraseña incorrectos' });
+        }
+    } catch (error) {
+        console.error('Error en la autenticación:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+});
 // Configurar el servidor HTTP y WebSocket
 const server = app.listen(port, () => {
     console.log(`Servidor API corriendo en http://localhost:${port}`);
