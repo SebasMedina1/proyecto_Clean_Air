@@ -85,7 +85,6 @@ app.post('/api/login', async (req, res) => {
         }
     } catch (error) {
         console.error('Error en la autenticación:', error);
-        console.error('Error procesando los datos del sensor:', req.body);
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 });
