@@ -107,7 +107,7 @@ app.post('/api/create', async (req, res) => {
         }
 
         // Insertar nuevo usuario en la tabla users con el nuevo ID
-        const result = await pool.query(
+        const [result] = await pool.query(
             'INSERT INTO users (id, usuario, contrasena) VALUES (?, ?, ?)', 
             [newId, usuario, contrasena]
         );
