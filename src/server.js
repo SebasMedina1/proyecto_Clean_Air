@@ -88,6 +88,30 @@ app.post('/api/login', async (req, res) => {
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 });
+// Nueva ruta para crear usuario
+app.post('/api/create', async (req, res) => {
+    try {
+        const { usuario, contrasena } = req.body;
+
+        // Validar que ambos campos estén presentes
+        if (!usuario || !contrasena) {
+            return res.status(400).json({ error: 'Usuario y contraseña son obligatorios' });
+        }
+
+        // Insertar nuevo usuario en la tabla users
+        const result = await pool.query('INSERT INTO users (usuario, contrasena) VALUES (?, ?)', [usuario, contrasena]);
+
+        // Comprobar si el insert fue exitoso
+        if (result.affectedRows > 0) {
+            res.status(201).json({ mensaje: 'Usuario creado con éxito' });
+        } else {
+            res.status(400).json({ error: 'No se pudo crear el usuario' });
+        }
+    } catch (error) {
+        console.error('Error creando el usuario:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+});
 // Configurar el servidor HTTP y WebSocket
 const server = app.listen(port, () => {
     console.log(`Servidor API corriendo en http://localhost:${port}`);

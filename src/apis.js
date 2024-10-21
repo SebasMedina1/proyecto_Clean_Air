@@ -7,7 +7,7 @@ api.get('/',(req,res) => {
     res.send('Prueba de respuesta')
 });
 
-api.get('/ping',async(req,res) => { 
+api.get('/select',async(req,res) => { 
     const [resultado] = await pool.query('SELECT "Prueba de primera consulta" as resultado');
     console.log (resultado)
     res.json(resultado)
