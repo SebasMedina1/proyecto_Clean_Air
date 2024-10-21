@@ -98,12 +98,23 @@ app.post('/api/create', async (req, res) => {
             return res.status(400).json({ error: 'Usuario y contraseña son obligatorios' });
         }
 
-        // Insertar nuevo usuario en la tabla users
-        const result = await pool.query('INSERT INTO users (usuario, contrasena) VALUES (?, ?)', [usuario, contrasena]);
+        // Obtener el último ID de la tabla users
+        const [rows] = await pool.query('SELECT MAX(id) AS lastId FROM users');
+
+        let newId = 1; // Por defecto, si no hay ningún usuario, comenzamos con el ID 1
+        if (rows.length > 0 && rows[0].lastId !== null) {
+            newId = rows[0].lastId + 1; // Sumar 1 al último ID
+        }
+
+        // Insertar nuevo usuario en la tabla users con el nuevo ID
+        const result = await pool.query(
+            'INSERT INTO users (id, usuario, contrasena) VALUES (?, ?, ?)', 
+            [newId, usuario, contrasena]
+        );
 
         // Comprobar si el insert fue exitoso
         if (result.affectedRows > 0) {
-            res.status(201).json({ mensaje: 'Usuario creado con éxito' });
+            res.status(201).json({ mensaje: 'Usuario creado con éxito', userId: newId });
         } else {
             res.status(400).json({ error: 'No se pudo crear el usuario' });
         }
@@ -112,6 +123,7 @@ app.post('/api/create', async (req, res) => {
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 });
+
 // Configurar el servidor HTTP y WebSocket
 const server = app.listen(port, () => {
     console.log(`Servidor API corriendo en http://localhost:${port}`);
